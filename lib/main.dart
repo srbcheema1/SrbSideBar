@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         primaryColor: Colors.white
       ),
-      home: SideBarLayout(),
+      home: SafeArea(child: SideBarLayout()),
     );
   }
 }
