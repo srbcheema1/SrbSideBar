@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc.navigation_bloc/navigation_bloc.dart';
-import '../sidebar/menu_item.dart';
+import 'navigation_bloc.dart';
+import 'menu_item.dart';
 
 class SideBar extends StatefulWidget {
   final _animationDuration = const Duration(milliseconds: 600);
@@ -89,15 +89,15 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                   ),
                   MenuItem(
                     icon: Icons.person,
-                    title: "My Account",
+                    title: "About Me",
                     onTap: () {
                       onIconPressed();
                       BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
                     },
                   ),
                   MenuItem(
-                    icon: Icons.shopping_basket,
-                    title: "My Orders",
+                    icon: Icons.mood,
+                    title: "Creator",
                     onTap: () {
                       onIconPressed();
                       BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
