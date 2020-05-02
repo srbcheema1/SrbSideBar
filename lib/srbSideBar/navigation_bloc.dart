@@ -66,19 +66,30 @@ class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin
         animationController: _animationController,
         animationDuration: widget._animationDuration,
       ),
-      child: GestureDetector(
-        // onVerticalDragDown: showNavigationBar(),
-        child: BlocProvider<NavigationBloc>(
-          create: (context) => NavigationBloc(),
-          child: Stack(
-            children: <Widget>[
-              BlocBuilder<NavigationBloc, NavigationStates>(
-                builder: (context, navigationState) {
-                  return navigationState as Widget;
-                },
+      child: Consumer<SrbAnimator>(
+        builder: (context, srbAnimator, child) => GestureDetector(
+          onPanUpdate: (DragUpdateDetails details) {
+            print("Srb drag " + details.toString());
+            if (details.delta.dx > 3)
+              print("Dragging in +X direction");
+            else if(details.delta.dx < -3)
+              print("Dragging in -X direction");
+          },
+          child: Container(
+            color: Colors.yellow,// if you comment it, drag doesn't work
+            child: BlocProvider<NavigationBloc>(
+              create: (context) => NavigationBloc(),
+              child: Stack(
+                children: <Widget>[
+                  BlocBuilder<NavigationBloc, NavigationStates>(
+                    builder: (context, navigationState) {
+                      return navigationState as Widget;
+                    },
+                  ),
+                  SideBar(),
+                ],
               ),
-              SideBar(),
-            ],
+            ),
           ),
         ),
       ),
