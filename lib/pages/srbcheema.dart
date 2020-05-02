@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../srbSideBar/navigation_bloc.dart';
-
-class SrbCheema extends StatelessWidget with NavigationStates {
+class SrbCheema extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(

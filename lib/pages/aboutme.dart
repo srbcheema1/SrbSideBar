@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../srbSideBar/navigation_bloc.dart';
-
-class AboutMe extends StatelessWidget with NavigationStates {
+class AboutMe extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Center(

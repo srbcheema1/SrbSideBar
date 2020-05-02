@@ -5,47 +5,35 @@ import 'package:provider/provider.dart';
 
 import 'srbAnimator.dart';
 import 'sidebar.dart';
-import '../pages/aboutme.dart';
-import '../pages/srbcheema.dart';
-import '../pages/homepage.dart';
+import '../pages/errorpage.dart';
 
-enum NavigationEvents {
-  HomePageClickedEvent,
-  MyAccountClickedEvent,
-  MyOrdersClickedEvent,
-}
-
-abstract class NavigationStates {}
-
-class NavigationBloc extends Bloc<NavigationEvents, NavigationStates> {
-  @override
-  NavigationStates get initialState => AboutMe();
+class NavigationBloc extends Bloc<String, Widget> {
+  Map<String,Widget> navigationMap;
+  Widget initialPage;
+  NavigationBloc({@required this.navigationMap, @required this.initialPage});
 
   @override
-  Stream<NavigationStates> mapEventToState(NavigationEvents event) async* {
-    switch (event) {
-      case NavigationEvents.HomePageClickedEvent:
-        yield HomePage();
-        break;
-      case NavigationEvents.MyAccountClickedEvent:
-        yield AboutMe();
-        break;
-      case NavigationEvents.MyOrdersClickedEvent:
-        yield SrbCheema();
-        break;
+  Widget get initialState => initialPage;
+
+  @override
+  Stream<Widget> mapEventToState(String event) async* {
+    if(navigationMap.containsKey(event)) {
+      yield navigationMap[event];
+    } else {
+      yield ErrorPage();
     }
   }
 }
 
 class SrbRoute extends StatefulWidget {
   final Map<String,Widget> _routemap = Map<String,Widget>();
-  final _animationDuration = const Duration(milliseconds: 600);
+  final Duration _animationDuration = const Duration(milliseconds: 600);
+  final Widget initialPage;
 
-  SrbRoute({@required List<Widget> children}) {
+  SrbRoute({@required List<Widget> children}): assert(children.length > 0),initialPage = children[0] {
     children.forEach((child){
       _routemap[child.runtimeType.toString()] = child;
     });
-    print("srb map " + _routemap.toString());
   }
 
   @override
@@ -75,12 +63,12 @@ class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin
           },
           child: Container(
             child: BlocProvider<NavigationBloc>(
-              create: (context) => NavigationBloc(),
+              create: (context) => NavigationBloc(navigationMap:widget._routemap,initialPage: widget.initialPage),
               child: Stack(
                 children: <Widget>[
-                  BlocBuilder<NavigationBloc, NavigationStates>(
-                    builder: (context, navigationState) {
-                      return navigationState as Widget;
+                  BlocBuilder<NavigationBloc, Widget>(
+                    builder: (context, widget) {
+                      return widget;
                     },
                   ),
                   SideBar(),

@@ -53,7 +53,7 @@ class SideBar extends StatelessWidget {
                     title: "Home",
                     onTap: () {
                       srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                      BlocProvider.of<NavigationBloc>(context).add("HomePage");
                     },
                   ),
                   MenuItem(
@@ -61,7 +61,7 @@ class SideBar extends StatelessWidget {
                     title: "About Me",
                     onTap: () {
                       srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
+                      BlocProvider.of<NavigationBloc>(context).add("AboutMe");
                     },
                   ),
                   MenuItem(
@@ -69,7 +69,7 @@ class SideBar extends StatelessWidget {
                     title: "Creator",
                     onTap: () {
                       srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
+                      BlocProvider.of<NavigationBloc>(context).add("SrbCheema");
                     },
                   ),
                   Divider(
