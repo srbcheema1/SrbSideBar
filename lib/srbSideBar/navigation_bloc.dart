@@ -68,15 +68,12 @@ class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin
       ),
       child: Consumer<SrbAnimator>(
         builder: (context, srbAnimator, child) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onPanUpdate: (DragUpdateDetails details) {
-            print("Srb drag " + details.toString());
-            if (details.delta.dx > 3)
-              print("Dragging in +X direction");
-            else if(details.delta.dx < -3)
-              print("Dragging in -X direction");
+            if (details.delta.dx > 6) srbAnimator.drag(true);
+            else if(details.delta.dx < -6) srbAnimator.drag(false);
           },
           child: Container(
-            color: Colors.yellow,// if you comment it, drag doesn't work
             child: BlocProvider<NavigationBloc>(
               create: (context) => NavigationBloc(),
               child: Stack(

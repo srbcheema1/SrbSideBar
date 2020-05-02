@@ -16,8 +16,12 @@ class SrbAnimator extends ChangeNotifier{
     super.dispose();
   }
 
-  void drag(DragStartDetails details) {
-
+  void drag(bool open) {
+    if(open) {
+      if(!opened) toggle();
+    } else {
+      if(opened) toggle();
+    }
   }
 
   void toggle() {
