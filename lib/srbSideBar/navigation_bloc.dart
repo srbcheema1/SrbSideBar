@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
+import 'srbAnimator.dart';
 import 'sidebar.dart';
 import '../pages/aboutme.dart';
 import '../pages/srbcheema.dart';
@@ -37,6 +39,7 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates> {
 
 class SrbRoute extends StatefulWidget {
   final Map<String,Widget> _routemap = Map<String,Widget>();
+  final _animationDuration = const Duration(milliseconds: 600);
 
   SrbRoute({@required List<Widget> children}) {
     children.forEach((child){
@@ -49,23 +52,34 @@ class SrbRoute extends StatefulWidget {
   _SrbRouteState createState() => _SrbRouteState();
 }
 
-class _SrbRouteState extends State<SrbRoute> {
-
+class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin<SrbRoute> {
+  AnimationController _animationController;
+  @override
+  void initState() {
+    _animationController = AnimationController(vsync: this,duration: widget._animationDuration);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      // onVerticalDragDown: showNavigationBar(),
-      child: BlocProvider<NavigationBloc>(
-        create: (context) => NavigationBloc(),
-        child: Stack(
-          children: <Widget>[
-            BlocBuilder<NavigationBloc, NavigationStates>(
-              builder: (context, navigationState) {
-                return navigationState as Widget;
-              },
-            ),
-            SideBar(),
-          ],
+    return ChangeNotifierProvider<SrbAnimator>(
+      create: (context) => SrbAnimator(
+        animationController: _animationController,
+        animationDuration: widget._animationDuration,
+      ),
+      child: GestureDetector(
+        // onVerticalDragDown: showNavigationBar(),
+        child: BlocProvider<NavigationBloc>(
+          create: (context) => NavigationBloc(),
+          child: Stack(
+            children: <Widget>[
+              BlocBuilder<NavigationBloc, NavigationStates>(
+                builder: (context, navigationState) {
+                  return navigationState as Widget;
+                },
+              ),
+              SideBar(),
+            ],
+          ),
         ),
       ),
     );

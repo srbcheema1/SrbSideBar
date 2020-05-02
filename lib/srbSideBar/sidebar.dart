@@ -1,53 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
+import 'srbAnimator.dart';
 import 'navigation_bloc.dart';
 import 'menu_item.dart';
 
-class SideBar extends StatefulWidget {
-  final _animationDuration = const Duration(milliseconds: 600);
-  @override
-  _SideBarState createState() => _SideBarState();
-}
-
-class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<SideBar> {
-  bool opened;
-  AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    opened = false;
-    _animationController = AnimationController(vsync: this, duration: widget._animationDuration);
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void onIconPressed() {
-    // final animationStatus = _animationController.status;
-    // final isAnimationCompleted = animationStatus == AnimationStatus.completed;
-    if(opened) {
-      _animationController.reverse();
-    } else {
-      _animationController.forward();
-    }
-    setState(() {opened = !opened;});
-  }
-
-  @override
+class SideBar extends StatelessWidget {
   Widget build(BuildContext context) {
+    SrbAnimator srbAnimator = Provider.of<SrbAnimator>(context);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return AnimatedPositioned(
-      duration: widget._animationDuration,
+      duration: srbAnimator.animationDuration,
       top: 0,
       bottom: 0,
-      left: opened ? 0 : -(screenWidth - 55),
-      right: opened ? 10 : screenWidth - 45,
+      left: srbAnimator.opened ? 0 : -(screenWidth - 55),
+      right: srbAnimator.opened ? 10 : screenWidth - 45,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -83,7 +52,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     icon: Icons.home,
                     title: "Home",
                     onTap: () {
-                      onIconPressed();
+                      srbAnimator.toggle();
                       BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
                     },
                   ),
@@ -91,7 +60,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     icon: Icons.person,
                     title: "About Me",
                     onTap: () {
-                      onIconPressed();
+                      srbAnimator.toggle();
                       BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyAccountClickedEvent);
                     },
                   ),
@@ -99,7 +68,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     icon: Icons.mood,
                     title: "Creator",
                     onTap: () {
-                      onIconPressed();
+                      srbAnimator.toggle();
                       BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyOrdersClickedEvent);
                     },
                   ),
@@ -122,7 +91,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
             alignment: Alignment(0, -0.85),
             child: GestureDetector(
               onTap: () {
-                onIconPressed();
+                srbAnimator.toggle();
               },
               child: ClipPath(
                 clipper: CustomMenuClipper(),
@@ -132,7 +101,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                   color: Color(0xFF262AAA),
                   alignment: Alignment.centerLeft,
                   child: AnimatedIcon(
-                    progress: _animationController.view,
+                    progress: srbAnimator.animationController.view,
                     icon: AnimatedIcons.menu_arrow,
                     color: Color(0xFF1BB5FD),
                     size: 25,
