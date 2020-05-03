@@ -5,48 +5,35 @@ import 'package:provider/provider.dart';
 
 import 'srbAnimator.dart';
 import 'sidebar.dart';
-import '../pages/errorpage.dart';
+import 'errorpage.dart';
 
-class NavigationBloc extends Bloc<String, Widget> {
-  Map<String,Widget> navigationMap;
-  Widget initialPage;
-  NavigationBloc({@required this.navigationMap, @required this.initialPage});
-
-  @override
-  Widget get initialState => initialPage;
-
-  @override
-  Stream<Widget> mapEventToState(String event) async* {
-    if(navigationMap.containsKey(event)) {
-      yield navigationMap[event];
-    } else {
-      yield ErrorPage();
-    }
-  }
-}
-
-class SrbRoute extends StatefulWidget {
+typedef Func(String str);
+typedef List<Widget> SidebarListBuilder(Func fun);
+class SrbSideBar extends StatefulWidget {
   final Map<String,Widget> _routemap = Map<String,Widget>();
   final Duration _animationDuration = const Duration(milliseconds: 600);
   final Widget initialPage;
+  // final List<Widget> sidebarList;
+  final SidebarListBuilder sidebarListBuilder;
 
-  SrbRoute({@required List<Widget> children}): assert(children.length > 0),initialPage = children[0] {
-    children.forEach((child){
+  SrbSideBar({@required List<Widget> sidebarRoutes, @required this.sidebarListBuilder}): assert(sidebarRoutes.length > 0),initialPage = sidebarRoutes[0] {
+    sidebarRoutes.forEach((child){
       _routemap[child.runtimeType.toString()] = child;
     });
   }
 
   @override
-  _SrbRouteState createState() => _SrbRouteState();
+  _SrbSideBarState createState() => _SrbSideBarState();
 }
 
-class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin<SrbRoute> {
+class _SrbSideBarState extends State<SrbSideBar> with SingleTickerProviderStateMixin<SrbSideBar> {
   AnimationController _animationController;
   @override
   void initState() {
     _animationController = AnimationController(vsync: this,duration: widget._animationDuration);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SrbAnimator>(
@@ -64,20 +51,41 @@ class _SrbRouteState extends State<SrbRoute> with SingleTickerProviderStateMixin
           child: Container(
             child: BlocProvider<NavigationBloc>(
               create: (context) => NavigationBloc(navigationMap:widget._routemap,initialPage: widget.initialPage),
-              child: Stack(
-                children: <Widget>[
-                  BlocBuilder<NavigationBloc, Widget>(
-                    builder: (context, widget) {
-                      return widget;
-                    },
-                  ),
-                  SideBar(),
-                ],
+              child :BlocBuilder<NavigationBloc,Widget>(
+                builder: (context,page) => Stack(
+                  children: <Widget>[
+                    page,
+                    SideBar(
+                      sidebarList: widget.sidebarListBuilder((String route){
+                        srbAnimator.toggle();
+                        BlocProvider.of<NavigationBloc>(context).add(route);
+                      })
+                    )
+                  ]
+                )
               ),
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class NavigationBloc extends Bloc<String, Widget> {
+  Map<String,Widget> navigationMap;
+  Widget initialPage;
+  NavigationBloc({@required this.navigationMap, @required this.initialPage});
+
+  @override
+  Widget get initialState => initialPage;
+
+  @override
+  Stream<Widget> mapEventToState(String event) async* {
+    if(navigationMap.containsKey(event)) {
+      yield navigationMap[event];
+    } else {
+      yield ErrorPage();
+    }
   }
 }

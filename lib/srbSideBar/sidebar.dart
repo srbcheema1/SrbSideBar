@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'srbAnimator.dart';
-import 'navigation_bloc.dart';
-import 'menu_item.dart';
 
 class SideBar extends StatelessWidget {
+  final List<Widget> sidebarList;
+  SideBar({@required this.sidebarList});
+
   Widget build(BuildContext context) {
     SrbAnimator srbAnimator = Provider.of<SrbAnimator>(context);
     final screenWidth = MediaQuery.of(context).size.width;
@@ -16,7 +16,7 @@ class SideBar extends StatelessWidget {
       top: 0,
       bottom: 0,
       left: srbAnimator.opened ? 0 : -(screenWidth - 55),
-      right: srbAnimator.opened ? 10 : screenWidth - 45,
+      right: srbAnimator.opened ? 40 : screenWidth - 45,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -25,65 +25,7 @@ class SideBar extends StatelessWidget {
               alignment: Alignment.topLeft,
               color: const Color(0xFF262AAA),
               child: ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: CircleAvatar(
-                      child: Icon(Icons.perm_identity,color: Colors.white),
-                      radius: 40.0,
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20.0),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "srb Cheema",
-                      style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  Divider(
-                    height: 40,
-                    thickness: 0.5,
-                    color: Colors.white.withOpacity(0.3),
-                    indent: 32,
-                    endIndent: 32,
-                  ),
-                  MenuItem(
-                    icon: Icons.home,
-                    title: "Home",
-                    onTap: () {
-                      srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add("HomePage");
-                    },
-                  ),
-                  MenuItem(
-                    icon: Icons.person,
-                    title: "About Me",
-                    onTap: () {
-                      srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add("AboutMe");
-                    },
-                  ),
-                  MenuItem(
-                    icon: Icons.mood,
-                    title: "Creator",
-                    onTap: () {
-                      srbAnimator.toggle();
-                      BlocProvider.of<NavigationBloc>(context).add("SrbCheema");
-                    },
-                  ),
-                  Divider(
-                    height: 40,
-                    thickness: 0.5,
-                    color: Colors.white.withOpacity(0.3),
-                    indent: 32,
-                    endIndent: 32,
-                  ),
-                  MenuItem(
-                    icon: Icons.settings,
-                    title: "Settings",
-                  ),
-                ],
+                children: sidebarList,
               ),
             ),
           ),
